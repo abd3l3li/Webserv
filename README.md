@@ -44,14 +44,11 @@ The configuration file uses an Nginx-like syntax with server blocks and location
 
 ```nginx
 server {
-    listen 8080;                          # Port to listen on
-    host 127.0.0.1;                       # Host address
+    listen 127.0.0.1:8080;                          # Port to listen on
+
     server_name myserver;                 # Server name
     
-    root /var/www/html;                   # Root directory
-    index index.html index.htm;           # Default files
-    
-    client_max_body_size 10M;             # Max request body size
+    keep_alive_timeout 500;
     
     error_page 404 /errors/404.html;      # Custom error pages
     error_page 500 502 /errors/50x.html;
@@ -62,15 +59,14 @@ server {
     }
     
     location /uploads {
-        allow_methods GET POST DELETE;
+        methods GET POST DELETE;
         upload_path /var/www/uploads;     # Upload directory
         autoindex on;
     }
     
     location /cgi-bin {
-        allow_methods GET POST;
+        methods GET POST;
         cgi_extension .php .py;           # CGI extensions
-        cgi_path /usr/bin/php-cgi;        # CGI interpreter
     }
     
     location /redirect {
@@ -79,7 +75,7 @@ server {
 }
 
 server {
-    listen 8081;
+    listen 127.0.0.1:8081;
     server_name another_server;
     root /var/www/other;
     # ... additional configuration
